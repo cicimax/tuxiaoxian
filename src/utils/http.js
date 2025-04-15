@@ -25,4 +25,4 @@ httpInstance.interceptors.response.use(
     }
 );
 
-export default httpInstance;;
+export default httpInstance;
