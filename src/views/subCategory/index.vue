@@ -24,7 +24,17 @@ const getGoodList = async () => {
 
   goodList.value = res.result.items
 }
-
+const tabChange =async () => {
+  reqData.value.page = 1
+  await getGoodList()
+}
+const load =async () => {
+  reqData.value.page++;
+  const res = await getSubCategoryAPI(reqData.value)
+  if(!res.result.items){
+   goodList.value= goodList.value.concat(res.result.items)
+  }
+}
 onMounted(() => getGoodList())
 </script>
 
@@ -39,12 +49,12 @@ onMounted(() => getGoodList())
       </el-breadcrumb>
     </div>
     <div class="sub-container">
-      <el-tabs>
+      <el-tabs v-model="reqData.sortField" @tabChange="tabChange">
         <el-tab-pane label="最新商品" name="publishTime"></el-tab-pane>
         <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
-      <div class="body">
+      <div class="body" v-infinite-scroll="load">
         <!-- 商品列表-->
         <GoodItem v-for="goods in goodList" :key="goods.id" :goods="goods"/>
       </div>
