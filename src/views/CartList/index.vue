@@ -1,10 +1,15 @@
-<script src="../../stores/carStore.js"></script>
+
 <script setup>
 import {useCartStore} from "@/stores/carStore.js";
-const cartStore = useCartStore();
 
-const single=(i,val)=>{
-    cartStore.singleCheck(i.skuId,val)
+
+const cartStore = useCartStore();
+const single=(i,e)=>{
+  console.log(cartStore.isALL);
+    cartStore.singleCheck(i.skuId,e)
+}
+const ALLsingle=(e)=>{
+  cartStore.allCheck(e)
 }
 </script>
 
@@ -16,7 +21,7 @@ const single=(i,val)=>{
           <thead>
           <tr>
             <th width="120">
-              <el-checkbox/>
+              <el-checkbox :model-value="cartStore.isALL" @change="ALLsingle"/>
             </th>
             <th width="400">商品信息</th>
             <th width="220">单价</th>
@@ -29,7 +34,7 @@ const single=(i,val)=>{
           <tbody>
           <tr v-for="i in cartStore.cartList" :key="i.id">
             <td>
-              <el-checkbox :model-value="i.selected"  @change="(i)=>single(i,val)"/>
+              <el-checkbox :model-value="i.selected"  @change="(e)=>single(i,e)"/>
             </td>
             <td>
               <div class="goods">
@@ -76,8 +81,8 @@ const single=(i,val)=>{
       <!-- 操作栏 -->
       <div class="action">
         <div class="batch">
-          共 10 件商品，已选择 2 件，商品合计：
-          <span class="red">¥ 200.00 </span>
+          共{{cartStore.allCount}}件商品，已选择 {{cartStore.selectedCount}} 件，商品合计：
+          <span class="red">¥ {{cartStore.allPrice}} </span>
         </div>
         <div class="total">
           <el-button size="large" type="primary" >下单结算</el-button>
